@@ -103,18 +103,44 @@ function initHeaderScroll() {
     const header = document.querySelector('.header');
     if (!header) return;
     
-    let lastScroll = 0;
-    
     window.addEventListener('scroll', () => {
         const currentScroll = window.pageYOffset;
         
         if (currentScroll > 80) {
-            header.style.background = 'rgba(3, 7, 18, 0.9)';
-            header.style.borderBottom = '1px solid rgba(255, 255, 255, 0.08)';
+            header.style.background = 'rgba(255, 248, 240, 0.92)';
         } else {
-            header.style.background = 'rgba(3, 7, 18, 0.78)';
+            header.style.background = 'rgba(255, 248, 240, 0.78)';
         }
-        
-        lastScroll = currentScroll;
     });
 }
+
+/* ==========================================================================
+   5. Gallery Lightbox
+   ========================================================================== */
+function openLightbox(el) {
+    const img = el.querySelector('img');
+    if (!img) return;
+    
+    const lightbox = document.getElementById('gallery-lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    
+    if (lightbox && lightboxImg) {
+        lightboxImg.src = img.src.replace('w=800&h=600&fit=crop', 'w=1600&h=1200&fit=crop');
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeLightbox(event) {
+    if (event && event.target.tagName === 'IMG') return;
+    
+    const lightbox = document.getElementById('gallery-lightbox');
+    if (lightbox) {
+        lightbox.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+});
