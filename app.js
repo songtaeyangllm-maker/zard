@@ -1,49 +1,15 @@
 // ==========================================================================
-// ZARD FanClub in KOREA - 2026 Interactive Application
+// ZARD FanClub in KOREA - Clean Modern Site
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
-    initStars();
     initScrollObserver();
     initMobileNav();
-    initHeaderScroll();
 });
 
 /* ==========================================================================
-   1. Dynamic Twinkling Stars Background
-   ========================================================================== */
-function initStars() {
-    const container = document.getElementById('stars-container');
-    if (!container) return;
-    
-    const starCount = 140;
-    const fragment = document.createDocumentFragment();
-    
-    for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.classList.add('star');
-        
-        const size = Math.random() * 2.2 + 0.8;
-        star.style.width = `${size}px`;
-        star.style.height = `${size}px`;
-        
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        
-        const duration = Math.random() * 3.5 + 2;
-        const delay = Math.random() * 5;
-        star.style.animationDuration = `${duration}s`;
-        star.style.animationDelay = `${delay}s`;
-        
-        fragment.appendChild(star);
-    }
-    
-    container.appendChild(fragment);
-}
-
-/* ==========================================================================
-   2. Scroll Animation Observer (Fade-In on Scroll)
+   Scroll Animation Observer
    ========================================================================== */
 function initScrollObserver() {
     const animElements = document.querySelectorAll('.animate-on-scroll');
@@ -67,7 +33,7 @@ function initScrollObserver() {
 }
 
 /* ==========================================================================
-   3. Mobile Navigation Menu
+   Mobile Navigation
    ========================================================================== */
 function initMobileNav() {
     const menuBtn = document.querySelector('.mobile-menu-btn');
@@ -95,26 +61,3 @@ function initMobileNav() {
         }
     });
 }
-
-/* ==========================================================================
-   4. Header Scroll Effect
-   ========================================================================== */
-function initHeaderScroll() {
-    const header = document.querySelector('.header');
-    if (!header) return;
-    
-    window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll > 80) {
-            header.style.background = 'rgba(255, 248, 240, 0.92)';
-        } else {
-            header.style.background = 'rgba(255, 248, 240, 0.78)';
-        }
-    });
-}
-
-/* ==========================================================================
-   5. Lightbox Removed
-   ========================================================================== */
-
