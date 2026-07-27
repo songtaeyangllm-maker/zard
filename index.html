@@ -6,7 +6,6 @@
     <title>ZARD FanClub in KOREA | 사카이 이즈미 헌정</title>
     <meta name="description" content="사카이 이즈미(ZARD)를 사랑하는 한국 팬클럽. 맑은 음색과 깊은 가사를 영원히 기억합니다.">
     <meta name="keywords" content="ZARD, 자드, 사카이 이즈미, 坂井泉水, Sakai Izumi, 한국 팬클럽, 마케나이데, 슬램덩크">
-    <meta name="author" content="ZARD FanClub in KOREA">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,9 +16,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
+    <canvas id="fx-canvas"></canvas>
+    
+    <div class="aurora-blob blob-1"></div>
+    <div class="aurora-blob blob-2"></div>
+    <div class="aurora-blob blob-3"></div>
 
     <header class="header">
         <div class="container header-container">
@@ -31,8 +32,7 @@
             <nav class="nav">
                 <ul class="nav-list">
                     <li><a href="#about" class="nav-link">About</a></li>
-                    <li><a href="#videos" class="nav-link">Videos</a></li>
-                    <li><a href="#tribute" class="nav-link">Tribute</a></li>
+                    <li><a href="#official" class="nav-link">Official</a></li>
                     <li><a href="#links" class="nav-link">Links</a></li>
                 </ul>
             </nav>
@@ -49,252 +49,176 @@
         </button>
         <ul class="mobile-nav-list">
             <li><a href="#about" class="mobile-nav-link">About</a></li>
-            <li><a href="#videos" class="mobile-nav-link">Videos</a></li>
-            <li><a href="#tribute" class="mobile-nav-link">Tribute</a></li>
+            <li><a href="#official" class="mobile-nav-link">Official</a></li>
             <li><a href="#links" class="mobile-nav-link">Links</a></li>
         </ul>
     </div>
 
-    <section class="hero-section">
-        <div class="container hero-container">
-            <div class="hero-content">
-                <span class="hero-badge animate-fade-in">ZARD FanClub in KOREA</span>
-                <h1 class="hero-title animate-fade-in">
-                    그 미소를<br><span class="text-gradient">잊지 말아줘</span>
-                </h1>
-                <p class="hero-subtitle animate-fade-in">
-                    "외로움에 지려 할 때도 멀리 있어도 내 마음은 곁에 있어요"<br>
-                    시대가 바뀌어도 우리를 위로하는 사카이 이즈미의 맑고 푸른 음색을 영원히 기억합니다.
-                </p>
-                <div class="hero-actions animate-fade-in">
-                    <a href="#about" class="btn btn-primary">Explore</a>
-                    <a href="#videos" class="btn btn-secondary">Watch Videos</a>
-                </div>
-            </div>
-            <div class="hero-visual animate-fade-in">
-                <div class="portrait-frame">
-                    <div class="portrait-placeholder">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/ZARD_1993.jpg/640px-ZARD_1993.jpg" alt="ZARD 1993" loading="eager" onerror="this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,#dbeafe,#f3e8ff);color:#2563eb;font-size:3rem;\'><i data-lucide=\'music\' style=\'width:80px;height:80px;opacity:0.7;\'></i></div>'">
-                    </div>
-                    <div class="portrait-glow"></div>
-                    <div class="portrait-caption">
-                        <span class="caption-title">Sakai Izumi (坂井泉水)</span>
-                        <span class="caption-date">1967. 02. 06 - 2007. 05. 27</span>
+    <main>
+        <section class="hero-section">
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <span class="hero-badge animate-fade-in">ZARD FanClub in KOREA</span>
+                    <h1 class="hero-title animate-fade-in">
+                        <span class="title-line">그 미소를</span>
+                        <span class="title-line text-gradient">잊지 말아줘</span>
+                    </h1>
+                    <p class="hero-subtitle animate-fade-in">
+                        시대가 바뀌어도 우리를 위로하는<br>
+                        사카이 이즈미의 맑고 푸른 음색을 영원히 기억합니다.
+                    </p>
+                    <div class="hero-actions animate-fade-in">
+                        <a href="#about" class="btn btn-primary">Explore</a>
+                        <a href="#official" class="btn btn-secondary">Official Sites</a>
                     </div>
                 </div>
+                <div class="hero-visual animate-fade-in">
+                    <div class="portrait-frame">
+                        <div class="portrait-img-wrapper">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/ZARD_1993.jpg/640px-ZARD_1993.jpg" alt="Sakai Izumi" loading="eager" onerror="this.parentElement.innerHTML='<div class=\'portrait-fallback\'><i data-lucide=\'music\'></i></div>'">
+                        </div>
+                        <div class="portrait-glow"></div>
+                        <div class="portrait-border-glow"></div>
+                        <div class="portrait-caption">
+                            <span class="caption-title">Sakai Izumi (坂井泉水)</span>
+                            <span class="caption-date">1967. 02. 06 - 2007. 05. 27</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="about" class="about-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">About Sakai Izumi</h2>
-                <p class="section-desc">음악으로 영원히 살아있는 그녀의 목소리</p>
-            </div>
-            
-            <div class="about-grid">
-                <div class="about-card card-glass animate-on-scroll">
-                    <div class="card-icon-wrapper">
-                        <i data-lucide="feather" class="card-icon"></i>
-                    </div>
-                    <h3>Lyricist & Vocalist</h3>
-                    <p>사카이 이즈미는 ZARD의 거의 모든 곡을 직접 작사했습니다. 일상적이고 친숙한 단어로 쓰인 그녀의 가사는 거창한 응원보다 곁에서 손을 잡아주는 따뜻한 위로를 전합니다.</p>
+        <section id="about" class="about-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Sakai Izumi</h2>
+                    <p class="section-desc">음악으로 영원히 살아있는 그녀의 목소리</p>
                 </div>
                 
-                <div class="about-card card-glass animate-on-scroll">
-                    <div class="card-icon-wrapper">
-                        <i data-lucide="heart" class="card-icon"></i>
+                <div class="about-grid">
+                    <div class="about-card card-glass animate-on-scroll">
+                        <div class="card-icon-wrapper">
+                            <i data-lucide="feather" class="card-icon"></i>
+                        </div>
+                        <h3>Lyricist & Vocalist</h3>
+                        <p>사카이 이즈미는 ZARD의 거의 모든 곡을 직접 작사했습니다. 일상적이고 친숙한 단어로 쓰인 그녀의 가사는 거창한 응원보다 곁에서 손을 잡아주는 따뜻한 위로를 전합니다.</p>
                     </div>
-                    <h3>Authentic Musician</h3>
-                    <p>화려한 메이크업이나 노출 없이, 편안한 오버사이즈 셔츠나 데님 자켓을 즐겨 입던 그녀. 미디어 노출을 최소화하고 묵묵히 녹음실에서 음악에 집중했습니다.</p>
-                </div>
-                
-                <div class="about-card card-glass animate-on-scroll">
-                    <div class="card-icon-wrapper">
-                        <i data-lucide="sparkles" class="card-icon"></i>
+                    
+                    <div class="about-card card-glass animate-on-scroll">
+                        <div class="card-icon-wrapper">
+                            <i data-lucide="heart" class="card-icon"></i>
+                        </div>
+                        <h3>Authentic Musician</h3>
+                        <p>화려한 메이크업이나 노출 없이, 편안한 오버사이즈 셔츠나 데님 자켓을 즐겨 입던 그녀. 미디어 노출을 최소화하고 묵묵히 녹음실에서 음악에 집중했습니다.</p>
                     </div>
-                    <h3>Timeless Icon</h3>
-                    <p>"Makenaide(지지 마세요)"는 일본 교과서에 실릴 만큼의 국민 응원가가 되었으며, 한국에서도 수많은 음악가들과 팬들의 감성을 자극하고 있습니다.</p>
+                    
+                    <div class="about-card card-glass animate-on-scroll">
+                        <div class="card-icon-wrapper">
+                            <i data-lucide="sparkles" class="card-icon"></i>
+                        </div>
+                        <h3>Timeless Icon</h3>
+                        <p>"Makenaide(지지 마세요)"는 일본 교과서에 실릴 만큼의 국민 응원가가 되었으며, 한국에서도 수많은 음악가들과 팬들의 감성을 자극하고 있습니다.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="videos" class="videos-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Music Videos</h2>
-                <p class="section-desc">ZARD의 대표 명곡들을 영상으로 만나보세요</p>
-            </div>
-            
-            <div class="videos-grid">
-                <div class="video-card card-glass animate-on-scroll">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/m3md3Bb3eQw" title="負けないで" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-info">
-                        <h4>負けないで</h4>
-                        <p>Makenaide / 지지 마세요 (1993)</p>
-                    </div>
+        <section id="official" class="official-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Official Channels</h2>
+                    <p class="section-desc">ZARD의 공식 채널과 관련 사이트</p>
                 </div>
                 
-                <div class="video-card card-glass animate-on-scroll">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/KRGXy7fhzNs" title="揺れる想い" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-info">
-                        <h4>揺れる想い</h4>
-                        <p>Yureru Omoi / 흔들리는 마음 (1993)</p>
-                    </div>
-                </div>
-                
-                <div class="video-card card-glass animate-on-scroll">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/kG7D2BPNV0Q" title="Oh My Love" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-info">
-                        <h4>Oh My Love</h4>
-                        <p>5th Single (1994)</p>
-                    </div>
-                </div>
-                
-                <div class="video-card card-glass animate-on-scroll">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/UVuN6aF1L4A" title="MIND GAMES" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-info">
-                        <h4>MIND GAMES</h4>
-                        <p>19th Single (1999)</p>
-                    </div>
-                </div>
-                
-                <div class="video-card card-glass animate-on-scroll">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/WQGJ7g1r2vY" title="Promised You" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-info">
-                        <h4>Promised You</h4>
-                        <p>25th Single (2000)</p>
-                    </div>
-                </div>
-                
-                <div class="video-card card-glass animate-on-scroll">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/KGv2sQZhQQE" title="星のかがやかない夜は" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-info">
-                        <h4>星のかがやかない夜は</h4>
-                        <p>별이 빛나지 않는 밤에는 (2004)</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="tribute" class="tribute-section">
-        <div class="container">
-            <div class="tribute-content card-glass animate-on-scroll">
-                <div class="tribute-icon">
-                    <i data-lucide="heart"></i>
-                </div>
-                <h2 class="tribute-title">Tribute to Sakai Izumi</h2>
-                <p class="tribute-text">
-                    2007년 5월 27일, 사카이 이즈미는 우리에게 너무 이른 작별을 고했습니다.<br>
-                    하지만 그녀의 노래는 여전히 살아있습니다.<br>
-                    지금도 어딘가에서 누군가의 마음을 위로하고 있으니까요.
-                </p>
-                <blockquote class="tribute-quote">
-                    "負けないで もう少し 最後まで走り抜けて"<br>
-                    "지지 말아요, 조금만 더, 끝까지 달려 나가요."
-                </blockquote>
-            </div>
-        </div>
-    </section>
-
-    <section id="links" class="links-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Official Links</h2>
-                <p class="section-desc">ZARD의 공식 채널과 관련 사이트</p>
-            </div>
-            
-            <div class="links-grid">
-                <a href="https://wezard.net" target="_blank" rel="noopener noreferrer" class="link-card card-glass animate-on-scroll">
-                    <div class="link-icon">
-                        <i data-lucide="globe"></i>
-                    </div>
-                    <div>
-                        <h4>WEZARD.net</h4>
-                        <p>ZARD 공식 홈페이지</p>
-                    </div>
-                </a>
-                
-                <a href="https://musing.jp/artist/zard/" target="_blank" rel="noopener noreferrer" class="link-card card-glass animate-on-scroll">
-                    <div class="link-icon">
-                        <i data-lucide="disc"></i>
-                    </div>
-                    <div>
-                        <h4>Musing Store</h4>
-                        <p>공식 음반 및 굿즈</p>
-                    </div>
-                </a>
-                
-                <a href="https://www.youtube.com/results?search_query=ZARD+official" target="_blank" rel="noopener noreferrer" class="link-card card-glass animate-on-scroll">
-                    <div class="link-icon">
-                        <i data-lucide="play-circle"></i>
-                    </div>
-                    <div>
-                        <h4>YouTube</h4>
-                        <p>ZARD 공식 영상</p>
-                    </div>
-                </a>
-                
-                <a href="https://ko.wikipedia.org/wiki/ZARD" target="_blank" rel="noopener noreferrer" class="link-card card-glass animate-on-scroll">
-                    <div class="link-icon">
-                        <i data-lucide="book-open"></i>
-                    </div>
-                    <div>
-                        <h4>Wikipedia</h4>
-                        <p>ZARD 백과사전</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer-section">
-        <div class="container footer-container">
-            <div class="footer-brand">
-                <a href="#" class="logo">
-                    <span class="logo-sub">ZARD FanClub</span>
-                    <span class="logo-main">IN KOREA</span>
-                </a>
-                <p class="footer-desc">
-                    이 공간은 한국의 ZARD 팬들이 사카이 이즈미(Sakai Izumi)님의 은혜로운 목소리와 따스했던 미소를 영원히 잊지 않고 추억하기 위해 마련한 비영리 헌정 웹사이트입니다.
-                </p>
-            </div>
-            
-            <div class="footer-links">
-                <h4>관련 링크</h4>
-                <ul>
-                    <li><a href="https://wezard.net" target="_blank" rel="noopener noreferrer">WEZARD.net <i data-lucide="external-link" class="icon-sm"></i></a></li>
-                    <li><a href="https://musing.jp/artist/zard/" target="_blank" rel="noopener noreferrer">Musing Store <i data-lucide="external-link" class="icon-sm"></i></a></li>
-                    <li><a href="https://ko.wikipedia.org/wiki/ZARD" target="_blank" rel="noopener noreferrer">Wikipedia <i data-lucide="external-link" class="icon-sm"></i></a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div class="container footer-bottom-container">
-                <p class="copyright">&copy; 2026 ZARD FanClub in KOREA. All rights reserved.</p>
-                <div class="github-badge">
-                    <a href="https://github.com/songtaeyangllm-maker/zard" target="_blank" rel="noopener noreferrer" class="github-link">
-                        <i data-lucide="github" class="icon-sm"></i> GitHub
+                <div class="official-grid">
+                    <a href="https://wezard.net" target="_blank" rel="noopener noreferrer" class="official-card card-glass animate-on-scroll">
+                        <div class="official-icon">
+                            <i data-lucide="globe"></i>
+                        </div>
+                        <div class="official-info">
+                            <h4>WEZARD.net</h4>
+                            <p>ZARD 공식 홈페이지</p>
+                        </div>
+                        <div class="official-arrow">
+                            <i data-lucide="external-link"></i>
+                        </div>
+                    </a>
+                    
+                    <a href="https://musing.jp/artist/zard/" target="_blank" rel="noopener noreferrer" class="official-card card-glass animate-on-scroll">
+                        <div class="official-icon">
+                            <i data-lucide="disc"></i>
+                        </div>
+                        <div class="official-info">
+                            <h4>Musing Store</h4>
+                            <p>공식 음반 및 굿즈</p>
+                        </div>
+                        <div class="official-arrow">
+                            <i data-lucide="external-link"></i>
+                        </div>
+                    </a>
+                    
+                    <a href="https://www.youtube.com/results?search_query=ZARD+official" target="_blank" rel="noopener noreferrer" class="official-card card-glass animate-on-scroll">
+                        <div class="official-icon">
+                            <i data-lucide="play-circle"></i>
+                        </div>
+                        <div class="official-info">
+                            <h4>YouTube</h4>
+                            <p>ZARD 공식 영상</p>
+                        </div>
+                        <div class="official-arrow">
+                            <i data-lucide="external-link"></i>
+                        </div>
+                    </a>
+                    
+                    <a href="https://ko.wikipedia.org/wiki/ZARD" target="_blank" rel="noopener noreferrer" class="official-card card-glass animate-on-scroll">
+                        <div class="official-icon">
+                            <i data-lucide="book-open"></i>
+                        </div>
+                        <div class="official-info">
+                            <h4>Wikipedia</h4>
+                            <p>ZARD 백과사전</p>
+                        </div>
+                        <div class="official-arrow">
+                            <i data-lucide="external-link"></i>
+                        </div>
                     </a>
                 </div>
             </div>
-        </div>
-    </footer>
+        </section>
+
+        <footer class="footer-section">
+            <div class="container footer-container">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <span class="logo-sub">ZARD FanClub</span>
+                        <span class="logo-main">IN KOREA</span>
+                    </a>
+                    <p class="footer-desc">
+                        이 공간은 한국의 ZARD 팬들이 사카이 이즈미(Sakai Izumi)님의 은혜로운 목소리와 따스했던 미소를 영원히 잊지 않고 추억하기 위해 마련한 비영리 헌정 웹사이트입니다.
+                    </p>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>관련 링크</h4>
+                    <ul>
+                        <li><a href="https://wezard.net" target="_blank" rel="noopener noreferrer">WEZARD.net <i data-lucide="external-link" class="icon-sm"></i></a></li>
+                        <li><a href="https://musing.jp/artist/zard/" target="_blank" rel="noopener noreferrer">Musing Store <i data-lucide="external-link" class="icon-sm"></i></a></li>
+                        <li><a href="https://ko.wikipedia.org/wiki/ZARD" target="_blank" rel="noopener noreferrer">Wikipedia <i data-lucide="external-link" class="icon-sm"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="container footer-bottom-container">
+                    <p class="copyright">&copy; 2026 ZARD FanClub in KOREA. All rights reserved.</p>
+                    <div class="github-badge">
+                        <a href="https://github.com/songtaeyangllm-maker/zard" target="_blank" rel="noopener noreferrer" class="github-link">
+                            <i data-lucide="github" class="icon-sm"></i> GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
 
     <script src="app.js"></script>
 </body>
