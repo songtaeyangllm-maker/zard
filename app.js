@@ -115,32 +115,6 @@ function initHeaderScroll() {
 }
 
 /* ==========================================================================
-   5. Gallery Lightbox
+   5. Lightbox Removed
    ========================================================================== */
-function openLightbox(el) {
-    const img = el.querySelector('img');
-    if (!img) return;
-    
-    const lightbox = document.getElementById('gallery-lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    
-    if (lightbox && lightboxImg) {
-        lightboxImg.src = img.src.replace('w=800&h=600&fit=crop', 'w=1600&h=1200&fit=crop');
-        lightbox.classList.add('open');
-        document.body.style.overflow = 'hidden';
-    }
-}
 
-function closeLightbox(event) {
-    if (event && event.target.tagName === 'IMG') return;
-    
-    const lightbox = document.getElementById('gallery-lightbox');
-    if (lightbox) {
-        lightbox.classList.remove('open');
-        document.body.style.overflow = '';
-    }
-}
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeLightbox();
-});
