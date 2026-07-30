@@ -480,9 +480,8 @@
         /* Smooth scroll */
         html { scroll-behavior: smooth; }
     </style>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
@@ -715,67 +714,55 @@
         if (e.key === 'Escape') lb.classList.remove('active');
     });
 
-    // ===== FAN BOARD (Firebase Firestore) =====
-    // 🔥 Firebase 설정 — 아래 값을 Firebase Console에서 복사한 내용으로 바꿔주세요
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT.firebaseapp.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    // ===== FAN BOARD (Supabase) =====
+    // 🔥 Supabase 설정 — 아래 값을 Supabase Dashboard > Settings > API에서 복사하세요
+    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+    const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    function loadMessages() {
+    async function loadMessages() {
         const list = document.getElementById('msg-list');
-        db.collection('fanboard')
-            .orderBy('createdAt', 'desc')
-            .limit(100)
-            .get()
-            .then(snapshot => {
-                if (snapshot.empty) {
-                    list.innerHTML = '<div class="msg msg-empty">첫 번째 메시지를 남겨주세요! 💜</div>';
-                    return;
-                }
-                list.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const msg = doc.data();
-                    list.innerHTML +=
-                        `<div class="msg">
-                            <span class="author">${escHtml(msg.name)}</span>
-                            <span class="date">${msg.date}</span>
-                            <div class="content">${escHtml(msg.text)}</div>
-                        </div>`;
-                });
-            })
-            .catch(err => {
-                list.innerHTML = `<div class="msg msg-empty">⚠️ 메시지를 불러오지 못했습니다: ${err.message}</div>`;
-            });
+        const { data, error } = await supabase
+            .from('fanboard')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(100);
+        if (error) {
+            list.innerHTML = `<div class="msg msg-empty">⚠️ 불러오기 오류: ${error.message}</div>`;
+            return;
+        }
+        if (!data || data.length === 0) {
+            list.innerHTML = '<div class="msg msg-empty">첫 번째 메시지를 남겨주세요! 💜</div>';
+            return;
+        }
+        list.innerHTML = '';
+        data.forEach(msg => {
+            list.innerHTML +=
+                `<div class="msg">
+                    <span class="author">${escHtml(msg.name)}</span>
+                    <span class="date">${msg.date}</span>
+                    <div class="content">${escHtml(msg.text)}</div>
+                </div>`;
+        });
     }
 
-    function postMessage() {
+    async function postMessage() {
         const name = document.getElementById('msg-name').value.trim();
         const text = document.getElementById('msg-content').value.trim();
         if (!name) { alert('이름을 입력해주세요.'); return; }
         if (!text) { alert('메시지를 입력해주세요.'); return; }
         const now = new Date();
         const dateStr = now.toLocaleDateString('ko-KR') + ' ' + now.toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit'});
-        db.collection('fanboard').add({
-            name,
-            text,
-            date: dateStr,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
-        .then(() => {
-            document.getElementById('msg-name').value = '';
-            document.getElementById('msg-content').value = '';
-            loadMessages();
-        })
-        .catch(err => {
-            alert('메시지 저장 중 오류가 발생했습니다: ' + err.message);
-        });
+        const { error } = await supabase
+            .from('fanboard')
+            .insert({ name, text, date: dateStr });
+        if (error) {
+            alert('저장 오류: ' + error.message);
+            return;
+        }
+        document.getElementById('msg-name').value = '';
+        document.getElementById('msg-content').value = '';
+        loadMessages();
     }
 
     function escHtml(s) {
