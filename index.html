@@ -480,8 +480,6 @@
         /* Smooth scroll */
         html { scroll-behavior: smooth; }
     </style>
-    <!-- Supabase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
@@ -714,36 +712,37 @@
         if (e.key === 'Escape') lb.classList.remove('active');
     });
 
-    // ===== FAN BOARD (Supabase) =====
-    // 🔥 Supabase 설정 — 아래 값을 Supabase Dashboard > Settings > API에서 복사하세요
-    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
-    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
-    const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // ===== FAN BOARD (GitHub messages.json) =====
+    // 🔑 GitHub PAT (Personal Access Token) 필요
+    // Settings > Developer settings > Fine-grained tokens > Generate new token
+    // Repository: songtaeyangllm-maker/zard  |  Permissions: Contents (Read and Write)
+    const GITHUB_TOKEN = '';  // ← 여기에 토큰 입력
+    const REPO_OWNER = 'songtaeyangllm-maker';
+    const REPO_NAME = 'zard';
+    const MSG_FILE = 'messages.json';
 
     async function loadMessages() {
         const list = document.getElementById('msg-list');
-        const { data, error } = await supabase
-            .from('fanboard')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(100);
-        if (error) {
-            list.innerHTML = `<div class="msg msg-empty">⚠️ 불러오기 오류: ${error.message}</div>`;
-            return;
+        try {
+            const res = await fetch(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${MSG_FILE}`);
+            if (!res.ok) throw new Error('불러오기 실패');
+            const data = await res.json();
+            if (!data || data.length === 0) {
+                list.innerHTML = '<div class="msg msg-empty">첫 번째 메시지를 남겨주세요! 💜</div>';
+                return;
+            }
+            list.innerHTML = '';
+            data.reverse().forEach(msg => {
+                list.innerHTML +=
+                    `<div class="msg">
+                        <span class="author">${escHtml(msg.name)}</span>
+                        <span class="date">${msg.date}</span>
+                        <div class="content">${escHtml(msg.text)}</div>
+                    </div>`;
+            });
+        } catch (e) {
+            list.innerHTML = `<div class="msg msg-empty">⚠️ 불러오기 오류: ${e.message}</div>`;
         }
-        if (!data || data.length === 0) {
-            list.innerHTML = '<div class="msg msg-empty">첫 번째 메시지를 남겨주세요! 💜</div>';
-            return;
-        }
-        list.innerHTML = '';
-        data.forEach(msg => {
-            list.innerHTML +=
-                `<div class="msg">
-                    <span class="author">${escHtml(msg.name)}</span>
-                    <span class="date">${msg.date}</span>
-                    <div class="content">${escHtml(msg.text)}</div>
-                </div>`;
-        });
     }
 
     async function postMessage() {
@@ -751,18 +750,46 @@
         const text = document.getElementById('msg-content').value.trim();
         if (!name) { alert('이름을 입력해주세요.'); return; }
         if (!text) { alert('메시지를 입력해주세요.'); return; }
+        if (!GITHUB_TOKEN) { alert('GitHub Token이 설정되지 않았습니다.\nindex.html 상단 GITHUB_TOKEN을 입력해주세요.'); return; }
+
         const now = new Date();
         const dateStr = now.toLocaleDateString('ko-KR') + ' ' + now.toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit'});
-        const { error } = await supabase
-            .from('fanboard')
-            .insert({ name, text, date: dateStr });
-        if (error) {
-            alert('저장 오류: ' + error.message);
-            return;
+        const newMsg = { name, text, date: dateStr };
+
+        try {
+            // 1. 현재 messages.json SHA 조회
+            const shaRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${MSG_FILE}`, {
+                headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}` }
+            });
+            const shaData = await shaRes.json();
+            const sha = shaData.sha;
+
+            // 2. 기존 메시지 읽기
+            const currentRes = await fetch(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${MSG_FILE}?t=${Date.now()}`);
+            const current = await currentRes.json();
+            current.push(newMsg);
+
+            // 3. GitHub API로 파일 업데이트
+            const updateRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${MSG_FILE}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${GITHUB_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: `fanboard: ${escHtml(name)}`,
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(current, null, 2)))),
+                    sha: sha
+                })
+            });
+            if (!updateRes.ok) throw new Error('저장 실패');
+
+            document.getElementById('msg-name').value = '';
+            document.getElementById('msg-content').value = '';
+            loadMessages();
+        } catch (e) {
+            alert('메시지 저장 중 오류: ' + e.message);
         }
-        document.getElementById('msg-name').value = '';
-        document.getElementById('msg-content').value = '';
-        loadMessages();
     }
 
     function escHtml(s) {
