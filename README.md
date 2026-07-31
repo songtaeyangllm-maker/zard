@@ -8,33 +8,34 @@
 
 **ZARD FanClub in KOREA**는 일본 가수 **사카이 이즈미(坂井泉水, 1967–2007)**의 아름다운 목소리와 음악을 영원히 기억하는 한국 팬클럽의 비영리 헌정 웹사이트입니다.
 
-한국에서 수만 명의 팬과 함께 했던 ZARD의 음악, 그리고 팬클럽의 역사를 이 공간에 담았습니다.
-
 ## 주요 기능
 
-- **Sakai Izumi** - 사카이 이즈미의 삶과 음악 철학
-- **Music** - 1991년부터 2007년까지의 대표 명곡
-- **History** - 한국 팬클럽의 추억 타임라인
-- **Gallery** - 아카이브 사진 컬렉션
-- **Community** - Board, Guestbook, Music
+- **About** — 사카이 이즈미와 ZARD의 이야기
+- **Music** — 대표 명곡 공식 YouTube 영상 (개인정보 보호 모드)
+- **Discography** — 1991년부터 25주년 베스트까지 음반 연대기
+- **Gallery** — 아카이브 사진 라이트박스 (이전/다음 탐색, 키보드 지원)
+- **Fan Board** — 팬 메시지 방명록
+  - GitHub 토큰 설정 시: `messages.json`에 공개 저장되어 모든 방문자와 공유
+  - 토큰 미설정 시: 브라우저 localStorage에 저장 (토큰 없이도 동작)
 
 ## 디자인 특징
 
-- 2026년 트렌드에 맞춘 **Dark Glassmorphism** 디자인
-- **반짝이는 별** 배경 (JavaScript 랜덤 생성)
-- **IntersectionObserver** 기반 스크롤 애니메이션
-- 완전 반응형 — 모바일/태블릿/데스크톱 대응
-- 한국어/일본어 타이틀 혼합 타이포그래피
+- 다크 퍼플 글래스모피즘 디자인
+- 부유하는 보랏빛 파티클 배경 (Canvas)
+- 히어로 명곡 로테이터 (負けないで · 揺れる想い · マイ フレンド · 永遠 · 運命のルーレット廻して)
+- IntersectionObserver 기반 스크롤 리빌 애니메이션
+- 완전 반응형 — 모바일 햄버거 메뉴 / 태블릿 / 데스크톱
+- `prefers-reduced-motion` 대응 (모션 줄이기 설정 시 애니메이션 최소화)
 
 ## 기술 스택
 
 | 항목 | 기술 |
 |------|------|
-| HTML | HTML5 Semantic |
-| CSS | Vanilla CSS3 + Glassmorphism |
-| JavaScript | Vanilla ES6+ |
-| 폰트 | Inter, Noto Sans KR, Playfair Display |
-| 아이콘 | Lucide Icons |
+| 구조 | HTML5 Semantic (단일 `index.html` 자체 포함) |
+| 스타일 | Vanilla CSS3 + Glassmorphism |
+| JavaScript | Vanilla ES6+ (외부 의존성 없음) |
+| 폰트 | Playfair Display, Noto Sans KR (Google Fonts) |
+| 방명록 | GitHub Contents API + localStorage 폴백 |
 
 ## 라이선스
 

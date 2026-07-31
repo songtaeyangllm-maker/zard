@@ -3,11 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZARD FanClub in KOREA</title>
+    <title>ZARD FanClub in KOREA | 사카이 이즈미 헌정</title>
+    <meta name="description" content="사카이 이즈미(ZARD)를 사랑하는 한국 팬클럽. 맑은 음색과 깊은 가사를 영원히 기억합니다.">
+    <meta name="keywords" content="ZARD, 자드, 사카이 이즈미, 坂井泉水, Sakai Izumi, 한국 팬클럽, 負けないで, 슬램덩크, 명탐정 코난">
+    <meta name="theme-color" content="#0d0b12">
+    <meta property="og:title" content="ZARD FanClub in KOREA">
+    <meta property="og:description" content="사카이 이즈미(ZARD)를 사랑하는 한국 팬클럽 — Forever with ZARD ♡">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/zard_large2.jpg">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%9C%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 76px; }
         body {
             font-family: 'Noto Sans KR', sans-serif;
             background: #0d0b12;
@@ -24,6 +34,22 @@
         ::-webkit-scrollbar-thumb { background: #3a2050; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #5a3080; }
 
+        /* ===== PARTICLE CANVAS ===== */
+        #fx-canvas {
+            position: fixed; inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        section, footer { position: relative; z-index: 1; }
+
+        /* ===== SCROLL REVEAL (enabled only when JS runs) ===== */
+        .js .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity .8s ease, transform .8s ease;
+        }
+        .js .animate-on-scroll.appear { opacity: 1; transform: none; }
+
         /* ===== NAV ===== */
         nav {
             position: fixed; top: 0; left: 0; right: 0;
@@ -33,17 +59,42 @@
             padding: 1rem 2rem;
             background: rgba(13,11,18,.88);
             backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(180,140,220,.08);
             transition: transform .3s;
         }
         nav.hidden { transform: translateY(-100%); }
         nav .logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #d4a0ff; letter-spacing: .2em; margin-right: 2rem; }
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; }
         nav a { font-size: .85rem; font-weight: 500; color: #b090d0; letter-spacing: .08em; position: relative; }
         nav a::after {
             content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
             background: #d4a0ff; transition: width .3s; border-radius: 1px;
         }
         nav a:hover::after { width: 100%; }
+        .hamburger {
+            display: none;
+            background: none; border: 1px solid rgba(180,140,220,.25);
+            color: #d4a0ff; font-size: 1.1rem; line-height: 1;
+            padding: .45rem .7rem; border-radius: .5rem; cursor: pointer;
+            transition: background .3s;
+        }
+        .hamburger:hover { background: rgba(180,140,220,.12); }
+        .mobile-menu {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 999;
+            padding: 5rem 2rem 1.5rem;
+            background: rgba(13,11,18,.97);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(180,140,220,.12);
+            display: flex; flex-direction: column; gap: .4rem;
+            transform: translateY(-110%);
+            transition: transform .35s ease;
+        }
+        .mobile-menu.open { transform: translateY(0); }
+        .mobile-menu a { padding: .7rem 0; font-size: .95rem; color: #b090d0; border-bottom: 1px solid rgba(180,140,220,.06); }
+        .mobile-menu a:hover { color: #d4a0ff; }
 
         /* ===== HERO ===== */
         .hero {
@@ -94,6 +145,7 @@
             letter-spacing: .12em;
             background: linear-gradient(135deg, #d4a0ff 0%, #f0d0ff 30%, #c080e0 60%, #a060c0 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1.1;
             margin-bottom: .5rem;
@@ -121,6 +173,22 @@
         .hero .hero-stats strong {
             display: block; font-size: 1.2rem; color: #d4a0ff; font-weight: 700;
         }
+        .lyric-rotator {
+            margin-top: 2.2rem;
+            min-height: 74px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: .2rem;
+        }
+        .lyric-rotator .lr-jp {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem; color: #e0c8ff; letter-spacing: .15em;
+        }
+        .lyric-rotator .lr-ko {
+            font-size: .85rem; color: #8060a0; letter-spacing: .08em;
+        }
+        .lyric-rotator .lr-item { display: none; animation: lrFade .8s ease; }
+        .lyric-rotator .lr-item.active { display: block; }
+        @keyframes lrFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
         .scroll-hint {
             position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%);
             z-index: 2;
@@ -172,7 +240,7 @@
             border: 1px solid rgba(180,140,220,.12);
             position: relative;
             aspect-ratio: 4/3;
-            background: #1a1030;
+            background: linear-gradient(135deg,#1a1030,#2a1040);
         }
         .about-image img {
             width: 100%;
@@ -207,11 +275,12 @@
             border: 1px solid rgba(180,140,220,.08);
             border-radius: 1rem;
             overflow: hidden;
-            transition: transform .3s, border-color .3s;
+            transition: transform .3s, border-color .3s, box-shadow .3s;
         }
         .video-card:hover {
             transform: translateY(-4px);
             border-color: rgba(180,140,220,.25);
+            box-shadow: 0 12px 40px rgba(120,60,180,.15);
         }
         .video-card .video-wrapper {
             position: relative;
@@ -230,10 +299,11 @@
 
         /* ===== DISCOGRAPHY ===== */
         #discography { background: linear-gradient(180deg, #0d0b12 0%, #120e1a 100%); }
+        .table-wrap { overflow-x: auto; margin-top: 2rem; border-radius: .8rem; }
         .disc-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 2rem;
+            min-width: 640px;
         }
         .disc-table th {
             text-align: left;
@@ -254,8 +324,8 @@
         .disc-table tr:hover td {
             background: rgba(180,140,220,.04);
         }
-        .disc-table .disc-year { color: #a070d0; font-weight: 500; width: 60px; }
-        .disc-table .disc-title { color: #e0c8ff; font-weight: 500; }
+        .disc-table .disc-year { color: #a070d0; font-weight: 500; width: 60px; white-space: nowrap; }
+        .disc-table .disc-title { color: #e0c8ff; font-weight: 500; white-space: nowrap; }
         .disc-table .disc-type {
             font-size: .75rem;
             padding: .2rem .6rem;
@@ -264,7 +334,9 @@
             color: #a070d0;
             width: 50px;
             text-align: center;
+            white-space: nowrap;
         }
+        .disc-table .disc-type.best { background: rgba(212,160,255,.15); color: #d4a0ff; }
 
         /* ===== GALLERY ===== */
         #gallery {
@@ -311,22 +383,35 @@
             position: fixed; inset: 0; z-index: 2000;
             background: rgba(0,0,0,.92);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             justify-content: center; align-items: center;
             cursor: pointer;
+            flex-direction: column; gap: 1rem;
         }
         .lightbox.active { display: flex; }
         .lightbox img {
-            max-width: 90vw;
-            max-height: 85vh;
+            max-width: 88vw;
+            max-height: 78vh;
             border-radius: .5rem;
             box-shadow: 0 0 60px rgba(160,112,208,.15);
         }
+        .lightbox .lb-cap { color: #a080c0; font-size: .9rem; letter-spacing: .1em; }
         .lightbox .close-lb {
             position: absolute; top: 1.5rem; right: 2rem;
             color: #8060a0; font-size: 2rem; cursor: pointer;
-            transition: color .3s;
+            transition: color .3s; line-height: 1;
         }
         .lightbox .close-lb:hover { color: #d4a0ff; }
+        .lightbox .lb-nav {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: none; border: 1px solid rgba(180,140,220,.25);
+            color: #a080c0; font-size: 1.6rem; line-height: 1;
+            width: 46px; height: 46px; border-radius: 50%;
+            cursor: pointer; transition: all .3s;
+        }
+        .lightbox .lb-nav:hover { color: #d4a0ff; border-color: #a070d0; background: rgba(160,112,208,.1); }
+        .lightbox .lb-prev { left: 1.5rem; }
+        .lightbox .lb-next { right: 1.5rem; }
 
         /* ===== FAN BOARD ===== */
         #fanboard {
@@ -343,7 +428,10 @@
             border-radius: 1rem;
             padding: 2rem;
         }
-        .board-form h3 { color: #d4a0ff; margin-bottom: 1.2rem; font-size: 1.1rem; }
+        .board-form h3 { color: #d4a0ff; margin-bottom: .4rem; font-size: 1.1rem; }
+        .board-note {
+            font-size: .78rem; color: #8060a0; margin-bottom: 1.2rem; line-height: 1.6;
+        }
         .board-form input,
         .board-form textarea {
             width: 100%;
@@ -363,6 +451,10 @@
             border-color: #a070d0;
         }
         .board-form textarea { resize: vertical; min-height: 100px; }
+        .board-form .form-foot {
+            display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+        }
+        .board-form .char-counter { color: #604080; font-size: .75rem; }
         .board-form .btn-submit {
             padding: .7rem 2rem;
             border: 1px solid #a070d0;
@@ -379,20 +471,32 @@
             background: #a070d0;
             color: #0d0b12;
         }
+        .board-side { display: flex; flex-direction: column; gap: 1rem; }
+        .board-side .msg-count { color: #8060a0; font-size: .8rem; letter-spacing: .05em; }
         .board-messages {
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            max-height: 400px;
+            max-height: 420px;
             overflow-y: auto;
             padding-right: .5rem;
         }
         .board-messages .msg {
+            display: flex; gap: .8rem; align-items: flex-start;
             background: rgba(26,16,48,.3);
             border: 1px solid rgba(180,140,220,.06);
             border-radius: .8rem;
             padding: 1rem 1.2rem;
         }
+        .board-messages .msg .avatar {
+            flex: 0 0 auto;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #f0e6ff; font-size: .9rem; font-weight: 700;
+            margin-top: .15rem;
+        }
+        .board-messages .msg .msg-body { min-width: 0; }
         .board-messages .msg .author {
             color: #d4a0ff;
             font-weight: 500;
@@ -407,12 +511,29 @@
             color: #b090c8;
             font-size: .88rem;
             margin-top: .3rem;
+            word-break: break-word;
         }
         .board-messages .msg-empty {
             text-align: center;
             color: #604080;
             padding: 2rem;
         }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px);
+            z-index: 3000;
+            background: rgba(42,16,64,.95);
+            border: 1px solid rgba(180,140,220,.3);
+            color: #e0c8ff;
+            padding: .8rem 1.5rem;
+            border-radius: 2rem;
+            font-size: .85rem;
+            opacity: 0; pointer-events: none;
+            transition: all .35s ease;
+            max-width: 90vw; text-align: center;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         /* ===== MEMBERSHIP ===== */
         #membership {
@@ -464,9 +585,10 @@
         @media (max-width: 900px) {
             .about-grid { grid-template-columns: 1fr; }
             .board-container { grid-template-columns: 1fr; }
-            nav .logo { display: none; }
-            nav { gap: 1.2rem; padding: .8rem 1rem; }
-            nav a { font-size: .78rem; }
+            nav { justify-content: space-between; padding: .8rem 1.2rem; }
+            nav .logo { margin-right: 0; }
+            .nav-links { display: none; }
+            .hamburger { display: block; }
         }
         @media (max-width: 768px) {
             .hero h1 { font-size: 3.2rem; }
@@ -475,24 +597,42 @@
             .video-grid { grid-template-columns: 1fr; }
             .gallery-grid { grid-template-columns: repeat(2, 1fr); }
             .hero-stats { flex-wrap: wrap; gap: 1rem; }
+            .lightbox .lb-nav { width: 38px; height: 38px; font-size: 1.2rem; }
+            .lightbox .lb-prev { left: .8rem; }
+            .lightbox .lb-next { right: .8rem; }
         }
-
-        /* Smooth scroll */
-        html { scroll-behavior: smooth; }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .js .animate-on-scroll { opacity: 1; transform: none; transition: none; }
+            .hero-bg, .scroll-hint { animation: none; }
+        }
     </style>
 </head>
 <body>
 
+<canvas id="fx-canvas"></canvas>
+
 <!-- Navigation -->
 <nav id="navbar">
     <span class="logo">ZARD</span>
+    <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#music">Music</a>
+        <a href="#discography">Discography</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#fanboard">Fan Board</a>
+        <a href="#membership">Membership</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="메뉴 열기" aria-expanded="false">☰</button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
     <a href="#about">About</a>
     <a href="#music">Music</a>
     <a href="#discography">Discography</a>
     <a href="#gallery">Gallery</a>
     <a href="#fanboard">Fan Board</a>
     <a href="#membership">Membership</a>
-</nav>
+</div>
 
 <!-- Hero -->
 <section class="hero" id="top">
@@ -507,6 +647,13 @@
             <span><strong>38M+</strong> 음반 판매</span>
             <span><strong>#1</strong> 한국 팬클럽</span>
         </div>
+        <div class="lyric-rotator" id="lyric-rotator" aria-label="ZARD 대표곡">
+            <div class="lr-item active"><span class="lr-jp">負けないで</span><span class="lr-ko">지지 말아요, 조금만 더, 끝까지 달려나가요 · 1993</span></div>
+            <div class="lr-item"><span class="lr-jp">揺れる想い</span><span class="lr-ko">흔들리는 마음 · 밀리언 셀러 · 1993</span></div>
+            <div class="lr-item"><span class="lr-jp">マイ フレンド</span><span class="lr-ko">슬램덩크 엔딩 테마 · 1996</span></div>
+            <div class="lr-item"><span class="lr-jp">永遠</span><span class="lr-ko">영원 · 대표 발라드 · 1997</span></div>
+            <div class="lr-item"><span class="lr-jp">運命のルーレット廻して</span><span class="lr-ko">명탐정 코난 오프닝 · 1998</span></div>
+        </div>
     </div>
     <div class="scroll-hint">
         SCROLL DOWN
@@ -517,14 +664,14 @@
 <!-- About -->
 <section id="about">
     <div class="section-inner">
-        <h2 class="section-title">About ZARD</h2>
-        <p class="section-sub">ZARD — 일본을 대표하는 전설적인 록 밴드</p>
-        <div class="section-divider"></div>
+        <h2 class="section-title animate-on-scroll">About ZARD</h2>
+        <p class="section-sub animate-on-scroll">ZARD — 일본을 대표하는 전설적인 록 밴드</p>
+        <div class="section-divider animate-on-scroll"></div>
         <div class="about-grid">
-            <div class="about-image">
-                <img src="images/zard_large2.jpg" alt="ZARD - Izumi Sakai" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a1030,#2a1040)';this.style.display='none'">
+            <div class="about-image animate-on-scroll">
+                <img src="images/zard_large2.jpg" alt="ZARD - Izumi Sakai" onerror="this.style.display='none'">
             </div>
-            <div class="about-text">
+            <div class="about-text animate-on-scroll">
                 <p><span class="highlight">ZARD</span>는 일본의 전설적인 록 밴드로, 보컬리스트 <span class="highlight">Izumi Sakai</span>(사카이 이즈미, 1967.2.6 ~ 2007.5.27)를 중심으로 1991년 데뷔했습니다.</p>
                 <p>그녀의 맑고도 깊이 있는 목소리, 서정적인 가사는 일본은 물론 한국을 포함한 아시아 전역에서 폭발적인 사랑을 받았습니다. <span class="highlight">「負けないで」</span>는 일본을 대표하는 응원가로 자리잡았으며, <span class="highlight">「揺れる想い」</span>, <span class="highlight">「マイ フレンド」</span>(슬램덩크 ED), <span class="highlight">「永遠」</span> 등 수많은 명곡을 남겼습니다.</p>
                 <div class="quote">
@@ -540,40 +687,40 @@
 <!-- Music (YouTube) -->
 <section id="music">
     <div class="section-inner">
-        <h2 class="section-title">Music</h2>
-        <p class="section-sub">ZARD Official YouTube</p>
-        <div class="section-divider"></div>
+        <h2 class="section-title animate-on-scroll">Music</h2>
+        <p class="section-sub animate-on-scroll">ZARD Official YouTube</p>
+        <div class="section-divider animate-on-scroll"></div>
         <div class="video-grid">
-            <div class="video-card">
+            <div class="video-card animate-on-scroll">
                 <div class="video-wrapper">
-                    <iframe src="https://www.youtube.com/embed/_4DJkOUU648" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube-nocookie.com/embed/_4DJkOUU648" title="負けないで Official MV" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
                 </div>
                 <div class="video-info">
                     <h4>負けないで</h4>
                     <p>1993 · ZARD 대표곡 · Official MV</p>
                 </div>
             </div>
-            <div class="video-card">
+            <div class="video-card animate-on-scroll">
                 <div class="video-wrapper">
-                    <iframe src="https://www.youtube.com/embed/jaFE9YH3Zmk" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube-nocookie.com/embed/jaFE9YH3Zmk" title="揺れる想い Official MV" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
                 </div>
                 <div class="video-info">
                     <h4>揺れる想い</h4>
                     <p>1993 · 밀리언 셀러 · Official MV</p>
                 </div>
             </div>
-            <div class="video-card">
+            <div class="video-card animate-on-scroll">
                 <div class="video-wrapper">
-                    <iframe src="https://www.youtube.com/embed/_A2th9RSL4U" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube-nocookie.com/embed/_A2th9RSL4U" title="マイ フレンド Live" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
                 </div>
                 <div class="video-info">
                     <h4>マイ フレンド</h4>
                     <p>1996 · 슬램덩크 ED · Live</p>
                 </div>
             </div>
-            <div class="video-card">
+            <div class="video-card animate-on-scroll">
                 <div class="video-wrapper">
-                    <iframe src="https://www.youtube.com/embed/HUTbH6ywrXk" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube-nocookie.com/embed/HUTbH6ywrXk" title="心を開いて Official MV" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
                 </div>
                 <div class="video-info">
                     <h4>心を開いて</h4>
@@ -587,71 +734,91 @@
 <!-- Discography -->
 <section id="discography">
     <div class="section-inner">
-        <h2 class="section-title">Discography</h2>
-        <p class="section-sub">ZARD의 음악 세계</p>
-        <div class="section-divider"></div>
-        <table class="disc-table">
-            <thead>
-                <tr>
-                    <th>Year</th>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td class="disc-year">1991</td><td class="disc-title">Good-bye My Loneliness</td><td><span class="disc-type">Single</span></td><td>데뷔 싱글</td></tr>
-                <tr><td class="disc-year">1991</td><td class="disc-title">もう探さない</td><td><span class="disc-type">Single</span></td><td>2nd 싱글</td></tr>
-                <tr><td class="disc-year">1992</td><td class="disc-title">HOLD ME</td><td><span class="disc-type">Album</span></td><td>1st 정규 앨범</td></tr>
-                <tr><td class="disc-year">1993</td><td class="disc-title">負けないで</td><td><span class="disc-type">Single</span></td><td>6th 싱글 · 일본 대표 응원가</td></tr>
-                <tr><td class="disc-year">1993</td><td class="disc-title">揺れる想い</td><td><span class="disc-type">Single</span></td><td>7th 싱글 · 밀리언 셀러</td></tr>
-                <tr><td class="disc-year">1993</td><td class="disc-title">揺れる想い</td><td><span class="disc-type">Album</span></td><td>2nd 정규 앨범 · 200만장 돌파</td></tr>
-                <tr><td class="disc-year">1994</td><td class="disc-title">Oh My Love</td><td><span class="disc-type">Album</span></td><td>4th 정규 앨범</td></tr>
-                <tr><td class="disc-year">1995</td><td class="disc-title">Forever you</td><td><span class="disc-type">Album</span></td><td>5th 정규 앨범</td></tr>
-                <tr><td class="disc-year">1996</td><td class="disc-title">マイ フレンド</td><td><span class="disc-type">Single</span></td><td>17th 싱글 · 슬램덩크 ED</td></tr>
-                <tr><td class="disc-year">1997</td><td class="disc-title">永遠</td><td><span class="disc-type">Single</span></td><td>대표 발라드 명곡</td></tr>
-                <tr><td class="disc-year">1998</td><td class="disc-title">運命のルーレット廻して</td><td><span class="disc-type">Single</span></td><td>명탐정 코난 OP</td></tr>
-                <tr><td class="disc-year">1999</td><td class="disc-title">MIND GAMES</td><td><span class="disc-type">Album</span></td><td>8th 정규 앨범</td></tr>
-                <tr><td class="disc-year">2004</td><td class="disc-title">今日はゆっくり話そう</td><td><span class="disc-type">Album</span></td><td>10th 정규 앨범</td></tr>
-                <tr><td class="disc-year">2005</td><td class="disc-title">君とのDistance</td><td><span class="disc-type">Album</span></td><td>11th 정규 앨범</td></tr>
-            </tbody>
-        </table>
+        <h2 class="section-title animate-on-scroll">Discography</h2>
+        <p class="section-sub animate-on-scroll">ZARD의 음악 세계</p>
+        <div class="section-divider animate-on-scroll"></div>
+        <div class="table-wrap animate-on-scroll">
+            <table class="disc-table">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="disc-year">1991</td><td class="disc-title">Good-bye My Loneliness</td><td><span class="disc-type">Single</span></td><td>데뷔 싱글</td></tr>
+                    <tr><td class="disc-year">1991</td><td class="disc-title">もう探さない</td><td><span class="disc-type">Single</span></td><td>초기 대표 싱글</td></tr>
+                    <tr><td class="disc-year">1992</td><td class="disc-title">HOLD ME</td><td><span class="disc-type">Album</span></td><td>정규 앨범</td></tr>
+                    <tr><td class="disc-year">1993</td><td class="disc-title">負けないで</td><td><span class="disc-type">Single</span></td><td>일본 대표 응원가 · 밀리언 셀러</td></tr>
+                    <tr><td class="disc-year">1993</td><td class="disc-title">揺れる想い</td><td><span class="disc-type">Single</span></td><td>밀리언 셀러</td></tr>
+                    <tr><td class="disc-year">1993</td><td class="disc-title">揺れる想い</td><td><span class="disc-type">Album</span></td><td>200만 장 돌파 정규 앨범</td></tr>
+                    <tr><td class="disc-year">1994</td><td class="disc-title">OH MY LOVE</td><td><span class="disc-type">Album</span></td><td>정규 앨범</td></tr>
+                    <tr><td class="disc-year">1995</td><td class="disc-title">forever you</td><td><span class="disc-type">Album</span></td><td>정규 앨범</td></tr>
+                    <tr><td class="disc-year">1996</td><td class="disc-title">マイ フレンド</td><td><span class="disc-type">Single</span></td><td>슬램덩크 ED</td></tr>
+                    <tr><td class="disc-year">1996</td><td class="disc-title">TODAY IS ANOTHER DAY</td><td><span class="disc-type">Album</span></td><td>정규 앨범</td></tr>
+                    <tr><td class="disc-year">1997</td><td class="disc-title">永遠</td><td><span class="disc-type">Single</span></td><td>대표 발라드 명곡</td></tr>
+                    <tr><td class="disc-year">1998</td><td class="disc-title">運命のルーレット廻して</td><td><span class="disc-type">Single</span></td><td>명탐정 코난 OP</td></tr>
+                    <tr><td class="disc-year">1999</td><td class="disc-title">永遠</td><td><span class="disc-type">Album</span></td><td>정규 앨범</td></tr>
+                    <tr><td class="disc-year">2001</td><td class="disc-title">時間の翼</td><td><span class="disc-type">Album</span></td><td>정규 앨범</td></tr>
+                    <tr><td class="disc-year">2004</td><td class="disc-title">止まっていた時計が今動き出した</td><td><span class="disc-type">Album</span></td><td>정규 앨범</td></tr>
+                    <tr><td class="disc-year">2004</td><td class="disc-title">今日はゆっくり話そう</td><td><span class="disc-type">Single</span></td><td>팬들에게 사랑받은 싱글</td></tr>
+                    <tr><td class="disc-year">2005</td><td class="disc-title">君とのDistance</td><td><span class="disc-type">Album</span></td><td>정규 앨범</td></tr>
+                    <tr><td class="disc-year">2007</td><td class="disc-title">Golden Best ~15th Anniversary~</td><td><span class="disc-type best">Best</span></td><td>사후 발매 · 15주년 베스트</td></tr>
+                    <tr><td class="disc-year">2016</td><td class="disc-title">ZARD Forever Best ~25th Anniversary~</td><td><span class="disc-type best">Best</span></td><td>25주년 베스트</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
 
 <!-- Gallery -->
 <section id="gallery">
     <div class="section-inner">
-        <h2 class="section-title">Gallery</h2>
-        <p class="section-sub">ZARD Photo Collection</p>
-        <div class="section-divider"></div>
+        <h2 class="section-title animate-on-scroll">Gallery</h2>
+        <p class="section-sub animate-on-scroll">ZARD Photo Collection</p>
+        <div class="section-divider animate-on-scroll"></div>
         <div class="gallery-grid" id="gallery-grid">
-            <div class="gallery-item"><img src="images/zard_large2.jpg" alt="ZARD Photo" loading="lazy"><div class="overlay"><span>Izumi Sakai</span></div></div>
-            <div class="gallery-item"><img src="images/zard_large3.jpg" alt="ZARD Concept" loading="lazy"><div class="overlay"><span>ZARD Concept</span></div></div>
-            <div class="gallery-item"><img src="images/hero_photo.jpg" alt="ZARD Hero" loading="lazy"><div class="overlay"><span>ZARD Portrait</span></div></div>
-            <div class="gallery-item"><img src="images/fans_message.jpg" alt="Fans Message" loading="lazy"><div class="overlay"><span>팬들의 메시지</span></div></div>
+            <div class="gallery-item animate-on-scroll"><img src="images/zard_large2.jpg" alt="Izumi Sakai" loading="lazy"><div class="overlay"><span>Izumi Sakai</span></div></div>
+            <div class="gallery-item animate-on-scroll"><img src="images/zard_large3.jpg" alt="ZARD Concept" loading="lazy"><div class="overlay"><span>ZARD Concept</span></div></div>
+            <div class="gallery-item animate-on-scroll"><img src="images/hero_photo.jpg" alt="ZARD Portrait" loading="lazy"><div class="overlay"><span>ZARD Portrait</span></div></div>
+            <div class="gallery-item animate-on-scroll"><img src="images/fans_message.jpg" alt="팬들의 메시지" loading="lazy"><div class="overlay"><span>팬들의 메시지</span></div></div>
         </div>
     </div>
 </section>
 
 <!-- Lightbox -->
-<div class="lightbox" id="lightbox"><span class="close-lb">&times;</span><img id="lb-img" src="" alt=""></div>
+<div class="lightbox" id="lightbox">
+    <span class="close-lb" id="lb-close">&times;</span>
+    <img id="lb-img" src="" alt="">
+    <span class="lb-cap" id="lb-cap"></span>
+    <button class="lb-nav lb-prev" id="lb-prev" aria-label="이전 사진">‹</button>
+    <button class="lb-nav lb-next" id="lb-next" aria-label="다음 사진">›</button>
+</div>
 
 <!-- Fan Board -->
 <section id="fanboard">
     <div class="section-inner">
-        <h2 class="section-title">Fan Board</h2>
-        <p class="section-sub">팬들의 메시지를 남겨주세요 💜</p>
-        <div class="section-divider"></div>
+        <h2 class="section-title animate-on-scroll">Fan Board</h2>
+        <p class="section-sub animate-on-scroll">팬들의 메시지를 남겨주세요 💜</p>
+        <div class="section-divider animate-on-scroll"></div>
         <div class="board-container">
-            <div class="board-form">
+            <div class="board-form animate-on-scroll">
                 <h3>✎ 메시지 남기기</h3>
-                <input type="text" id="msg-name" placeholder="이름 (필수)" maxlength="20">
+                <p class="board-note" id="board-note"></p>
+                <input type="text" id="msg-name" placeholder="이름 (필수)" maxlength="20" autocomplete="off">
                 <textarea id="msg-content" placeholder="ZARD에 대한 당신의 이야기를 들려주세요..." maxlength="500"></textarea>
-                <button class="btn-submit" onclick="postMessage()">남기기</button>
+                <div class="form-foot">
+                    <span class="char-counter" id="char-counter">0 / 500</span>
+                    <button class="btn-submit" id="btn-submit">남기기</button>
+                </div>
             </div>
-            <div class="board-messages" id="msg-list">
-                <div class="msg msg-empty">첫 번째 메시지를 남겨주세요! 💜</div>
+            <div class="board-side animate-on-scroll">
+                <span class="msg-count" id="msg-count">💬 총 0개의 메시지</span>
+                <div class="board-messages" id="msg-list">
+                    <div class="msg msg-empty">첫 번째 메시지를 남겨주세요! 💜</div>
+                </div>
             </div>
         </div>
     </div>
@@ -660,10 +827,10 @@
 <!-- Membership -->
 <section id="membership">
     <div class="section-inner">
-        <h2 class="section-title">Membership</h2>
-        <p class="section-sub">ZARD FanClub in KOREA</p>
-        <div class="section-divider"></div>
-        <div class="membership-box">
+        <h2 class="section-title animate-on-scroll">Membership</h2>
+        <p class="section-sub animate-on-scroll">ZARD FanClub in KOREA</p>
+        <div class="section-divider animate-on-scroll"></div>
+        <div class="membership-box animate-on-scroll">
             <div class="icon">💜</div>
             <h3>함께해요, ZARD와</h3>
             <p class="desc">ZARD의 음악을 사랑하는 모든 분들을 환영합니다!</p>
@@ -677,129 +844,335 @@
     <p>ZARD FanClub in KOREA &nbsp;|&nbsp; <span class="heart">♡</span> &nbsp;|&nbsp; Forever with ZARD</p>
     <p style="margin-top:.5rem;font-size:.75rem;">本サイトはファン運営の非公式サイトです / This is a fan-operated unofficial website</p>
     <div class="links">
-        <a href="https://www.youtube.com/@zardofficial" target="_blank">YouTube</a>
-        <a href="https://www.wezard.net" target="_blank">Official Site</a>
+        <a href="https://www.youtube.com/@zardofficial" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://www.wezard.net" target="_blank" rel="noopener">Official Site</a>
+        <a href="https://github.com/songtaeyangllm-maker/zard" target="_blank" rel="noopener">GitHub</a>
         <a href="#top">Top</a>
     </div>
 </footer>
 
 <script>
-    // ===== NAV BAR AUTO HIDE =====
-    let lastScroll = 0;
-    const nav = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-        const cur = window.scrollY;
-        if (cur > lastScroll && cur > 120) nav.classList.add('hidden');
-        else nav.classList.remove('hidden');
-        lastScroll = cur;
-    });
+document.documentElement.classList.add('js');
 
-    // ===== GALLERY LIGHTBOX =====
+/* ==========================================================================
+   1. NAV BAR AUTO HIDE + MOBILE MENU
+   ========================================================================== */
+const nav = document.getElementById('navbar');
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+    const cur = window.scrollY;
+    if (cur > lastScroll && cur > 120 && !mobileMenu.classList.contains('open')) nav.classList.add('hidden');
+    else nav.classList.remove('hidden');
+    lastScroll = cur;
+});
+
+hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+    nav.classList.remove('hidden');
+});
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+}));
+
+/* ==========================================================================
+   2. PARTICLE BACKGROUND (floating violet lights)
+   ========================================================================== */
+(function initParticles() {
+    const canvas = document.getElementById('fx-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let running = true;
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+        constructor() {
+            this.reset(true);
+        }
+        reset(anywhere) {
+            this.x = Math.random() * canvas.width;
+            this.y = anywhere ? Math.random() * canvas.height : canvas.height + 10;
+            this.size = Math.random() * 2.2 + 0.8;
+            this.speedY = Math.random() * 0.35 + 0.12;
+            this.sway = Math.random() * 0.6 + 0.2;
+            this.phase = Math.random() * Math.PI * 2;
+            this.baseAlpha = Math.random() * 0.3 + 0.12;
+            this.twinkle = Math.random() * 1.2 + 0.4;
+            this.hue = Math.random() < 0.5 ? '212,160,255' : '160,112,208';
+        }
+        update(t) {
+            this.y -= this.speedY;
+            this.x += Math.sin(t * this.sway + this.phase) * 0.25;
+            if (this.y < -12) this.reset(false);
+        }
+        draw(t) {
+            const alpha = this.baseAlpha + Math.sin(t * this.twinkle + this.phase) * 0.1;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${this.hue},${Math.max(0.05, alpha)})`;
+            ctx.fill();
+        }
+    }
+
+    const count = Math.min(55, Math.floor(window.innerWidth / 28));
+    for (let i = 0; i < count; i++) particles.push(new Particle());
+
+    function animate(t) {
+        if (!running) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(t / 1000); p.draw(t / 1000); });
+        requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+
+    document.addEventListener('visibilitychange', () => {
+        running = !document.hidden;
+        if (running) requestAnimationFrame(animate);
+    });
+})();
+
+/* ==========================================================================
+   3. SCROLL REVEAL
+   ========================================================================== */
+(function initScrollObserver() {
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    if (!('IntersectionObserver' in window)) {
+        elements.forEach(el => el.classList.add('appear'));
+        return;
+    }
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('appear');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    elements.forEach(el => observer.observe(el));
+})();
+
+/* ==========================================================================
+   4. HERO LYRIC ROTATOR
+   ========================================================================== */
+(function initLyricRotator() {
+    const items = document.querySelectorAll('#lyric-rotator .lr-item');
+    if (items.length < 2) return;
+    let idx = 0;
+    setInterval(() => {
+        items[idx].classList.remove('active');
+        idx = (idx + 1) % items.length;
+        items[idx].classList.add('active');
+    }, 4200);
+})();
+
+/* ==========================================================================
+   5. GALLERY LIGHTBOX
+   ========================================================================== */
+(function initLightbox() {
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lb-img');
-    document.querySelectorAll('.gallery-item img').forEach(img => {
-        img.addEventListener('click', () => {
-            lbImg.src = img.src;
-            lb.classList.add('active');
-        });
-    });
+    const lbCap = document.getElementById('lb-cap');
+    const items = Array.from(document.querySelectorAll('.gallery-item'));
+    if (!lb || items.length === 0) return;
+    let idx = 0;
+
+    function show(i) {
+        idx = (i + items.length) % items.length;
+        const img = items[idx].querySelector('img');
+        const cap = items[idx].querySelector('.overlay span');
+        lbImg.src = img.src;
+        lbCap.textContent = cap ? cap.textContent : '';
+        lb.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function hide() {
+        lb.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    items.forEach((item, i) => item.addEventListener('click', () => show(i)));
     lb.addEventListener('click', (e) => {
-        if (e.target === lb || e.target.classList.contains('close-lb')) {
-            lb.classList.remove('active');
-        }
+        if (e.target === lb || e.target.id === 'lb-close') hide();
     });
+    document.getElementById('lb-prev').addEventListener('click', (e) => { e.stopPropagation(); show(idx - 1); });
+    document.getElementById('lb-next').addEventListener('click', (e) => { e.stopPropagation(); show(idx + 1); });
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') lb.classList.remove('active');
+        if (!lb.classList.contains('active')) return;
+        if (e.key === 'Escape') hide();
+        if (e.key === 'ArrowLeft') show(idx - 1);
+        if (e.key === 'ArrowRight') show(idx + 1);
     });
+})();
 
-    // ===== FAN BOARD (GitHub messages.json) =====
-    // 🔑 GitHub PAT (Personal Access Token) 필요
-    // Settings > Developer settings > Fine-grained tokens > Generate new token
-    // Repository: songtaeyangllm-maker/zard  |  Permissions: Contents (Read and Write)
-    const GITHUB_TOKEN = '';  // ← 여기에 토큰 입력
-    const REPO_OWNER = 'songtaeyangllm-maker';
-    const REPO_NAME = 'zard';
-    const MSG_FILE = 'messages.json';
+/* ==========================================================================
+   6. FAN BOARD
+      - GitHub 토큰이 설정되어 있으면 messages.json에 공개 저장
+      - 토큰이 없어도 localStorage에 저장되어 이 브라우저에서는 동작
+   ========================================================================== */
+const GITHUB_TOKEN = '';   // 선택: GitHub PAT 입력 시 전 세계 팬들과 공유
+const REPO_OWNER = 'songtaeyangllm-maker';
+const REPO_NAME = 'zard';
+const MSG_FILE = 'messages.json';
+const STORAGE_KEY = 'zard_fanboard_messages';
+const MAX_LEN = 500;
 
-    async function loadMessages() {
-        const list = document.getElementById('msg-list');
-        try {
-            const res = await fetch(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${MSG_FILE}`);
-            if (!res.ok) throw new Error('불러오기 실패');
-            const data = await res.json();
-            if (!data || data.length === 0) {
-                list.innerHTML = '<div class="msg msg-empty">첫 번째 메시지를 남겨주세요! 💜</div>';
-                return;
-            }
-            list.innerHTML = '';
-            data.reverse().forEach(msg => {
-                list.innerHTML +=
-                    `<div class="msg">
-                        <span class="author">${escHtml(msg.name)}</span>
-                        <span class="date">${msg.date}</span>
-                        <div class="content">${escHtml(msg.text)}</div>
-                    </div>`;
-            });
-        } catch (e) {
-            list.innerHTML = `<div class="msg msg-empty">⚠️ 불러오기 오류: ${e.message}</div>`;
-        }
+function getLocalMessages() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+    catch (e) { return []; }
+}
+function saveLocalMessages(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+function avatarColor(name) {
+    let h = 0;
+    for (const ch of String(name)) h = (h * 31 + ch.charCodeAt(0)) % 360;
+    return `hsl(${h}, 42%, 32%)`;
+}
+
+function renderMessages(data) {
+    const list = document.getElementById('msg-list');
+    const count = document.getElementById('msg-count');
+    const total = Array.isArray(data) ? data.length : 0;
+    count.textContent = `💬 총 ${total}개의 메시지`;
+    if (total === 0) {
+        list.innerHTML = '<div class="msg msg-empty">첫 번째 메시지를 남겨주세요! 💜</div>';
+        return;
+    }
+    list.innerHTML = '';
+    [...data].reverse().forEach(msg => {
+        const el = document.createElement('div');
+        el.className = 'msg';
+        el.innerHTML =
+            `<span class="avatar" style="background:${avatarColor(msg.name)}">${escHtml((msg.name || '?').charAt(0))}</span>` +
+            `<div class="msg-body">` +
+            `<div><span class="author">${escHtml(msg.name)}</span><span class="date">${escHtml(msg.date || '')}</span></div>` +
+            `<div class="content">${escHtml(msg.text)}</div>` +
+            `</div>`;
+        list.appendChild(el);
+    });
+}
+
+async function loadMessages() {
+    const list = document.getElementById('msg-list');
+    if (!GITHUB_TOKEN) {
+        renderMessages(getLocalMessages());
+        return;
+    }
+    try {
+        const res = await fetch(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${MSG_FILE}?t=${Date.now()}`);
+        if (!res.ok) throw new Error('불러오기 실패');
+        renderMessages(await res.json());
+    } catch (e) {
+        list.innerHTML = `<div class="msg msg-empty">⚠️ GitHub에서 메시지를 불러오지 못했습니다: ${escHtml(e.message)}</div>`;
+    }
+}
+
+async function postMessage() {
+    const nameEl = document.getElementById('msg-name');
+    const textEl = document.getElementById('msg-content');
+    const name = nameEl.value.trim();
+    const text = textEl.value.trim();
+    if (!name) { toast('이름을 입력해주세요.'); nameEl.focus(); return; }
+    if (!text) { toast('메시지를 입력해주세요.'); textEl.focus(); return; }
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('ko-KR') + ' ' + now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+    const newMsg = { name, text, date: dateStr };
+
+    if (!GITHUB_TOKEN) {
+        const data = getLocalMessages();
+        data.push(newMsg);
+        saveLocalMessages(data);
+        renderMessages(data);
+        nameEl.value = ''; textEl.value = '';
+        updateCounter();
+        toast('저장되었습니다 💜 (이 브라우저에만 표시됩니다)');
+        return;
     }
 
-    async function postMessage() {
-        const name = document.getElementById('msg-name').value.trim();
-        const text = document.getElementById('msg-content').value.trim();
-        if (!name) { alert('이름을 입력해주세요.'); return; }
-        if (!text) { alert('메시지를 입력해주세요.'); return; }
-        if (!GITHUB_TOKEN) { alert('GitHub Token이 설정되지 않았습니다.\nindex.html 상단 GITHUB_TOKEN을 입력해주세요.'); return; }
+    try {
+        const shaRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${MSG_FILE}`, {
+            headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}` }
+        });
+        if (!shaRes.ok) throw new Error('GitHub 인증 실패 (토큰 확인 필요)');
+        const sha = (await shaRes.json()).sha;
 
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('ko-KR') + ' ' + now.toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit'});
-        const newMsg = { name, text, date: dateStr };
+        const current = await (await fetch(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${MSG_FILE}?t=${Date.now()}`)).json();
+        current.push(newMsg);
 
-        try {
-            // 1. 현재 messages.json SHA 조회
-            const shaRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${MSG_FILE}`, {
-                headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}` }
-            });
-            const shaData = await shaRes.json();
-            const sha = shaData.sha;
-
-            // 2. 기존 메시지 읽기
-            const currentRes = await fetch(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${MSG_FILE}?t=${Date.now()}`);
-            const current = await currentRes.json();
-            current.push(newMsg);
-
-            // 3. GitHub API로 파일 업데이트
-            const updateRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${MSG_FILE}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${GITHUB_TOKEN}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: `fanboard: ${escHtml(name)}`,
-                    content: btoa(unescape(encodeURIComponent(JSON.stringify(current, null, 2)))),
-                    sha: sha
-                })
-            });
-            if (!updateRes.ok) throw new Error('저장 실패');
-
-            document.getElementById('msg-name').value = '';
-            document.getElementById('msg-content').value = '';
-            loadMessages();
-        } catch (e) {
-            alert('메시지 저장 중 오류: ' + e.message);
-        }
+        const updateRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${MSG_FILE}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${GITHUB_TOKEN}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `fanboard: ${name}`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(current, null, 2)))),
+                sha
+            })
+        });
+        if (!updateRes.ok) throw new Error('저장 실패');
+        nameEl.value = ''; textEl.value = '';
+        updateCounter();
+        toast('GitHub에 공개 저장되었습니다 💜');
+        loadMessages();
+    } catch (e) {
+        toast('메시지 저장 중 오류: ' + e.message);
     }
+}
 
-    function escHtml(s) {
-        const d = document.createElement('div');
-        d.textContent = s;
-        return d.innerHTML;
+function escHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+let toastTimer;
+function toast(msg) {
+    let t = document.getElementById('toast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'toast';
+        document.body.appendChild(t);
     }
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
 
-    // ===== INIT =====
-    loadMessages();
+const textEl = document.getElementById('msg-content');
+const counter = document.getElementById('char-counter');
+function updateCounter() { counter.textContent = `${textEl.value.length} / ${MAX_LEN}`; }
+textEl.addEventListener('input', updateCounter);
+
+const nameEl = document.getElementById('msg-name');
+nameEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') textEl.focus(); });
+
+// 저장 모드 안내
+document.getElementById('board-note').textContent = GITHUB_TOKEN
+    ? '🌐 GitHub messages.json에 공개 저장되어 모든 방문자와 공유됩니다.'
+    : '💾 현재는 이 브라우저에만 저장됩니다. (GitHub 연동은 관리자 토큰 설정 시 활성화)';
+
+document.getElementById('btn-submit').addEventListener('click', postMessage);
+
+/* ==========================================================================
+   7. INIT
+   ========================================================================== */
+loadMessages();
 </script>
 
 </body>
