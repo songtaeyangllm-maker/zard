@@ -482,11 +482,26 @@
             padding-right: .5rem;
         }
         .board-messages .msg {
+            position: relative;
             display: flex; gap: .8rem; align-items: flex-start;
             background: rgba(26,16,48,.3);
             border: 1px solid rgba(180,140,220,.06);
             border-radius: .8rem;
             padding: 1rem 1.2rem;
+        }
+        .board-messages .msg .msg-del {
+            position: absolute; top: .6rem; right: .6rem;
+            background: none; border: none;
+            color: #604080; font-size: .85rem; line-height: 1;
+            cursor: pointer; opacity: 0;
+            transition: opacity .3s, color .3s;
+            padding: .25rem .4rem; border-radius: .4rem;
+        }
+        .board-messages .msg:hover .msg-del,
+        .board-messages .msg .msg-del:focus-visible { opacity: 1; }
+        .board-messages .msg .msg-del:hover { color: #e07090; background: rgba(224,112,144,.1); }
+        @media (hover: none) {
+            .board-messages .msg .msg-del { opacity: .5; }
         }
         .board-messages .msg .avatar {
             flex: 0 0 auto;
@@ -534,6 +549,65 @@
             max-width: 90vw; text-align: center;
         }
         #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Delete confirm modal */
+        .del-modal {
+            display: none;
+            position: fixed; inset: 0; z-index: 2500;
+            background: rgba(0,0,0,.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            justify-content: center; align-items: center;
+            padding: 1.5rem;
+        }
+        .del-modal.active { display: flex; }
+        .del-box {
+            background: linear-gradient(160deg, #1a1030, #241238);
+            border: 1px solid rgba(180,140,220,.25);
+            border-radius: 1.2rem;
+            padding: 2rem;
+            width: 100%; max-width: 380px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,.5);
+        }
+        .del-box .del-icon { font-size: 2rem; margin-bottom: .6rem; }
+        .del-box h3 { color: #e07090; font-size: 1.15rem; margin-bottom: .4rem; }
+        .del-box p { color: #8060a0; font-size: .85rem; margin-bottom: 1.2rem; line-height: 1.6; }
+        .del-box input {
+            width: 100%;
+            padding: .8rem 1rem;
+            margin-bottom: 1.2rem;
+            background: rgba(13,11,18,.7);
+            border: 1px solid rgba(180,140,220,.2);
+            border-radius: .5rem;
+            color: #e8e0f0;
+            font-size: .95rem;
+            text-align: center;
+            letter-spacing: .15em;
+            transition: border-color .3s;
+        }
+        .del-box input:focus { outline: none; border-color: #a070d0; }
+        .del-actions { display: flex; gap: .8rem; justify-content: center; }
+        .del-actions button {
+            flex: 1;
+            padding: .7rem 1rem;
+            border-radius: 2rem;
+            border: 1px solid #a070d0;
+            background: transparent;
+            color: #d4a0ff;
+            cursor: pointer;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: .88rem;
+            font-weight: 500;
+            transition: all .3s;
+        }
+        .del-actions .del-cancel:hover { background: rgba(160,112,208,.15); }
+        .del-actions .del-confirm {
+            background: #a070d0;
+            color: #0d0b12;
+            border-color: #a070d0;
+        }
+        .del-actions .del-confirm:hover { background: #c080e0; }
 
         /* ===== MEMBERSHIP ===== */
         #membership {
@@ -824,6 +898,20 @@
     </div>
 </section>
 
+<!-- Delete Confirm Modal -->
+<div class="del-modal" id="del-modal">
+    <div class="del-box">
+        <div class="del-icon">🗑️</div>
+        <h3>메시지 삭제</h3>
+        <p>이 메시지를 삭제할까요?<br>관리자 비밀번호를 입력해주세요.</p>
+        <input type="password" id="del-pw" placeholder="관리자 비밀번호" autocomplete="off">
+        <div class="del-actions">
+            <button class="del-cancel" id="del-cancel">취소</button>
+            <button class="del-confirm" id="del-confirm">삭제</button>
+        </div>
+    </div>
+</div>
+
 <!-- Membership -->
 <section id="membership">
     <div class="section-inner">
@@ -1049,7 +1137,9 @@ function renderMessages(data) {
         return;
     }
     list.innerHTML = '';
-    [...data].reverse().forEach(msg => {
+    // 최신 메시지가 위로 오도록 역순 표시 (원본 인덱스는 유지)
+    for (let i = data.length - 1; i >= 0; i--) {
+        const msg = data[i];
         const el = document.createElement('div');
         el.className = 'msg';
         el.innerHTML =
@@ -1058,8 +1148,15 @@ function renderMessages(data) {
             `<div><span class="author">${escHtml(msg.name)}</span><span class="date">${escHtml(msg.date || '')}</span></div>` +
             `<div class="content">${escHtml(msg.text)}</div>` +
             `</div>`;
+        const delBtn = document.createElement('button');
+        delBtn.className = 'msg-del';
+        delBtn.title = '메시지 삭제 (관리자)';
+        delBtn.setAttribute('aria-label', '메시지 삭제');
+        delBtn.textContent = '🗑';
+        delBtn.addEventListener('click', () => openDeleteModal(i));
+        el.appendChild(delBtn);
         list.appendChild(el);
-    });
+    }
 }
 
 async function loadMessages() {
@@ -1126,6 +1223,75 @@ async function postMessage() {
     }
 }
 
+/* --------------------------------------------------------------------------
+   메시지 삭제 (관리자 비밀번호 확인)
+   - ADMIN_PW를 바꾸면 관리자 비밀번호가 변경됩니다.
+   - 클라이언트 코드라 완벽한 보안은 아니지만, 일반 방문자의 오삭제를 막는 용도.
+   -------------------------------------------------------------------------- */
+const ADMIN_PW = 'zard2026';   // ← 관리자 비밀번호 (원하는 값으로 변경)
+let deleteIndex = -1;
+
+function openDeleteModal(index) {
+    deleteIndex = index;
+    const modal = document.getElementById('del-modal');
+    const pw = document.getElementById('del-pw');
+    pw.value = '';
+    modal.classList.add('active');
+    setTimeout(() => pw.focus(), 60);
+}
+
+function closeDeleteModal() {
+    document.getElementById('del-modal').classList.remove('active');
+    deleteIndex = -1;
+}
+
+async function confirmDelete() {
+    const pw = document.getElementById('del-pw').value;
+    if (pw !== ADMIN_PW) {
+        toast('비밀번호가 올바르지 않습니다.');
+        document.getElementById('del-pw').value = '';
+        document.getElementById('del-pw').focus();
+        return;
+    }
+    const idx = deleteIndex;
+    closeDeleteModal();
+    if (idx < 0) return;
+
+    try {
+        // 1. 현재 공개 메시지 읽기
+        const res = await fetch(`${BLOB_URL}?t=${Date.now()}`);
+        if (!res.ok) throw new Error('저장소 읽기 실패');
+        const current = await res.json();
+        if (!Array.isArray(current)) throw new Error('데이터 형식 오류');
+        if (idx >= current.length) throw new Error('이미 삭제된 메시지');
+
+        // 2. 해당 메시지 제거 후 저장
+        const removed = current.splice(idx, 1)[0];
+        const putRes = await fetch(BLOB_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(current)
+        });
+        if (!putRes.ok) throw new Error('삭제 실패');
+
+        // 3. 로컬 백업에도 반영
+        saveLocalMessages(current);
+        toast(`"${(removed.name || '').slice(0, 10)}"님의 메시지를 삭제했습니다.`);
+        loadMessages();
+    } catch (e) {
+        // 서버 삭제 실패 시: 로컬 백업에서만 삭제
+        const data = getLocalMessages();
+        if (idx < data.length) {
+            data.splice(idx, 1);
+            saveLocalMessages(data);
+            renderMessages(data);
+            toast('⚠️ 공개 저장소 삭제 실패 — 이 브라우저에서만 삭제했습니다.');
+        } else {
+            toast('⚠️ 삭제 오류: ' + e.message);
+        }
+    }
+}
+
 function escHtml(s) {
     const d = document.createElement('div');
     d.textContent = s;
@@ -1158,6 +1324,19 @@ nameEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') textEl.focus(
 document.getElementById('board-note').textContent = '🌐 공개 방명록 — 글을 남기면 전 세계 모든 방문자와 공유됩니다.';
 
 document.getElementById('btn-submit').addEventListener('click', postMessage);
+
+// ===== 삭제 모달 이벤트 =====
+document.getElementById('del-confirm').addEventListener('click', confirmDelete);
+document.getElementById('del-cancel').addEventListener('click', closeDeleteModal);
+document.getElementById('del-modal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeDeleteModal();  // 바깥 영역 클릭 시 닫기
+});
+document.getElementById('del-pw').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') confirmDelete();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('del-modal').classList.contains('active')) closeDeleteModal();
+});
 
 /* ==========================================================================
    7. INIT
